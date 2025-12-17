@@ -94,7 +94,6 @@ class bzPlayerDiplomacyActionPanel {
             typeIcon.setAttribute("data-tooltip-content", tooltip);
         }
         // befriending status
-        const diplomacy = observer.Diplomacy;
         const befriendType = DiplomacyActionTypes.DIPLOMACY_ACTION_GIVE_INFLUENCE_TOKEN;
         const actions = Game.Diplomacy.getPlayerEvents(player.id)
             .filter(act => act.actionType == befriendType);
@@ -105,10 +104,11 @@ class bzPlayerDiplomacyActionPanel {
             const player = Configuration.getPlayer(act.initialPlayer);
             const cdata = Game.Diplomacy.getCompletionData(act.uniqueID);
             const turns = cdata.turnsToCompletion;
-            const order = player.id <= observer ? player.id + 1000 : player.id;
+            const order = player.id <= observer.id ? player.id + 1000 : player.id;
             befriending.push({ target, player, turns, order });
         }
         befriending.sort((a, b) => a.turns - b.turns || a.order - b.order);
+        const diplomacy = observer.Diplomacy;
         for (const friend of befriending) {
             const friendIcon = document.createElement("leader-icon");
             friendIcon.classList.value = "relative mr-2 size-13";
