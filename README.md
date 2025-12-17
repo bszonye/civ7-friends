@@ -1,2 +1,2 @@
-# bz-friends
-Friends and Rivals mod for Civilization VII
+# Friends and Rivals
+better city-states list
