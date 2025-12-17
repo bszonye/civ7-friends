@@ -118,7 +118,7 @@ class bzPlayerDiplomacyActionPanel {
             const friendTurns = document.createElement("div");
             friendTurns.classList.value =
                 "absolute -bottom-2 font-body-xs leading-tight bg-accent-2 px-1 z-1";
-            friendTurns.style.paddingLeft = friendTurns.style.paddingRight = "0.125em";
+            friendTurns.style.paddingLeft = friendTurns.style.paddingRight = "0.25em";
             friendTurns.style.backgroundColor = "#000c";
             friendTurns.style.borderRadius = "0.375em";
             friendTurns.textContent = friend.turns.toString();
