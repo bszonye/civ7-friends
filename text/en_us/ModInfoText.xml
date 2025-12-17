@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+    <EnglishText>
+        <Row Tag="LOC_MOD_BZ_FRIENDS_NAME">
+            <Text>Friends and Rivals</Text>
+        </Row>
+        <Row Tag="LOC_MOD_BZ_FRIENDS_DESCRIPTION">
+            <Text>better city-states list</Text>
+        </Row>
+    </EnglishText>
+</Database>
