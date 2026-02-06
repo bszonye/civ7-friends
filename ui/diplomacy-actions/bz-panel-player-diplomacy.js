@@ -112,6 +112,8 @@ class bzPlayerDiplomacyActionPanel {
         for (const friend of befriending) {
             const friendIcon = document.createElement("leader-icon");
             friendIcon.classList.value = "relative mr-2 size-13";
+            // TODO: is this worth checking?
+            // the Befriending panel reveals unmet leaders, oops
             if (diplomacy.hasMet(friend.player.id) || friend.player.id == observer.id) {
                 friendIcon.setAttribute("leader", friend.player.leaderTypeName);
                 friendIcon.setAttribute(
