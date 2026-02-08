@@ -27,6 +27,9 @@
                 <UIScripts>
                     <Item>ui/diplomacy-actions/bz-panel-player-diplomacy.js</Item>
                 </UIScripts>
+                <UpdateText>
+                    <Item>text/en_us/InGameText.xml</Item>
+                </UpdateText>
             </Actions>
         </ActionGroup>
     </ActionGroups>

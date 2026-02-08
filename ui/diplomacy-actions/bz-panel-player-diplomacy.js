@@ -92,6 +92,18 @@ class bzPlayerDiplomacyActionPanel {
                 .map(s => `[style:leading-normal]${s}[/style]`)
                 .join("[n]");
             typeIcon.setAttribute("data-tooltip-content", tooltip);
+            // show warning icon for broken independents
+            if (player.isIndependent) {
+                const warningIcon = document.createElement("div");
+                warningIcon.classList.value =
+                    "relative mr-2 size-13 bg-cover bg-no-repeat";
+                warningIcon.style.backgroundImage = UI.getIconCSS("ATTENTION");
+                warningIcon.style.filter = "drop-shadow(0 0.22rem 0.11rem black)";
+                warningIcon.setAttribute(
+                    "data-tooltip-content", "LOC_BZ_WARNING_RESPAWNED_INDEPENDENT"
+                );
+                column.appendChild(warningIcon);
+            }
         }
         // befriending status
         const befriendType = DiplomacyActionTypes.DIPLOMACY_ACTION_GIVE_INFLUENCE_TOKEN;
@@ -112,8 +124,7 @@ class bzPlayerDiplomacyActionPanel {
         for (const friend of befriending) {
             const friendIcon = document.createElement("leader-icon");
             friendIcon.classList.value = "relative mr-2 size-13";
-            // TODO: is this worth checking?
-            // the Befriending panel reveals unmet leaders, oops
+            // note: the Befriending panel reveals unmet leaders, oops
             if (diplomacy.hasMet(friend.player.id) || friend.player.id == observer.id) {
                 friendIcon.setAttribute("leader", friend.player.leaderTypeName);
                 friendIcon.setAttribute(
