@@ -41,6 +41,9 @@ class bzPlayerDiplomacyActionPanel {
     beforeDetach()  {}
     afterDetach() { }
     afterCreateMinorPlayerListItem(item, player) {
+        const column = document.createElement("div");
+        column.classList.value =
+            "basis-full shrink flex flex-row flex-row-reverse justify-start items-center";
         const observer = Players.get(GameContext.localObserverID);
         const isEnemy = player.Diplomacy?.isAtWarWith(observer.id);
         // adjust vanilla styling
@@ -48,38 +51,18 @@ class bzPlayerDiplomacyActionPanel {
         const civIcon = content.firstChild;
         const suzIcon = content.querySelector("leader-icon");
         // const civName = content.querySelector(".font-title");
-        civIcon.style.filter = "drop-shadow(0 0.22rem 0.11rem #0006)";
+        civIcon.style.filter = isEnemy ?
+            "drop-shadow(0 -0.056rem 0.333rem #af1b1c) drop-shadow(0 -0.056rem 0.222rem #af1b1c)" :
+            "drop-shadow(0 0.222rem 0.111rem #0006)";
         suzIcon?.classList.remove("mt-2");
-        // show city-state type and befriending status
-        const column = document.createElement("div");
-        column.classList.value =
-            "basis-full shrink flex flex-row flex-row-reverse justify-start items-center";
-        const typeBG = document.createElement("div");
-        typeBG.classList.value =
-            "mr-1\\.5 size-16 bg-cover bg-no-repeat border-4 rounded-full";
-        typeBG.style.marginLeft = "-3.3333333333rem";
-        typeBG.style.borderColor = isEnemy ? "#af1b1c" : "transparent";
-        typeBG.style.backgroundImage = `url('blp:buildicon_open')`;
-        typeBG.style.filter = "drop-shadow(0 0.22rem 0.11rem black)";
-        const typeIcon = document.createElement("div");
-        typeIcon.classList.value = "size-14 bg-cover bg-no-repeat";
-        const type = GameInfo.Independents
-            .find(i => player.civilizationAdjective == i.CityStateName)
-            ?.CityStateType.toLowerCase() ?? "crisis";
-        const color =
-            type == "militaristic" ? "#af1b1c" :
-            type == "scientific" ? "#4d7c96" :
-            type == "economic" ? "#ffd553" :
-            type == "cultural" ? "#892bb3" :
-            type == "diplomatic" ? "#255be4" :
-            type == "expansionist" ? "#00a717" :
-            type == "crisis" ? "#af1b1c" :
-            "#af1b1c";
-        typeIcon.style.backgroundImage = `url('blp:bonustype_${type}')`;
-        typeIcon.style.opacity = 0.5;
-        typeIcon.style.filter = `brightness(2) fxs-color-tint(${color})`;
-        column.appendChild(typeBG);
-        column.appendChild(typeIcon);
+        // show crisis icons
+        const type = GameInfo.CityStateTypes.lookup(player.getCityStateCityStateType());
+        if (!type) {  // crisis encampment
+            const icon = civIcon.firstChild;
+            icon.style.backgroundImage = "url('blp:bonustype_crisis')";
+            icon.style.filter = "fxs-color-tint(#af1b1c)";
+            icon.classList.add("bg-black", "rounded-full");
+        }
         // show city-state bonus in tooltip
         const bonusType = Game.CityStates.getBonusType(player.id);
         const bonus = GameInfo.CityStateBonuses.lookup(bonusType);
@@ -91,7 +74,7 @@ class bzPlayerDiplomacyActionPanel {
                 .split(/\[[Nn]\]/)
                 .map(s => `[style:leading-normal]${s}[/style]`)
                 .join("[n]");
-            typeIcon.setAttribute("data-tooltip-content", tooltip);
+            item.setAttribute("data-tooltip-content", tooltip);
             // show warning icon for broken independents
             if (player.isIndependent) {
                 const warningIcon = document.createElement("div");
@@ -105,7 +88,7 @@ class bzPlayerDiplomacyActionPanel {
                 column.appendChild(warningIcon);
             }
         }
-        // befriending status
+        // show befriending status
         const befriendType = DiplomacyActionTypes.DIPLOMACY_ACTION_GIVE_INFLUENCE_TOKEN;
         const actions = Game.Diplomacy.getPlayerEvents(player.id)
             .filter(act => act.actionType == befriendType);
