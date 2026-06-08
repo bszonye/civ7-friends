@@ -52,7 +52,7 @@ class bzPlayerDiplomacyActionPanel {
         const suzIcon = content.querySelector("leader-icon");
         // const civName = content.querySelector(".font-title");
         civIcon.style.filter = isEnemy ?
-            "drop-shadow(0 -0.056rem 0.333rem #af1b1c) drop-shadow(0 -0.056rem 0.222rem #af1b1c)" :
+            "drop-shadow(0 0 0.333rem #ff4b44) drop-shadow(0 0 0.222rem #af1b1c)" :
             "drop-shadow(0 0.222rem 0.111rem #0006)";
         suzIcon?.classList.remove("mt-2");
         // show crisis icons
