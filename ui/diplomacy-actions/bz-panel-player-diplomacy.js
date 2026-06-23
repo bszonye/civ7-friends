@@ -1,6 +1,5 @@
 class bzPlayerDiplomacyActionPanel {
     static c_prototype;
-    locations = new Map();
     constructor(component) {
         this.component = component;
         component.bzComponent = this;
@@ -20,23 +19,7 @@ class bzPlayerDiplomacyActionPanel {
             return afterCreateMinorPlayerListItem.apply(this.bzComponent, args);
         }
     }
-    beforeAttach() {
-        this.locations.clear();
-        for (const player of Players.getAlive()) {
-            if (player.isIndependent) {
-                const loc = player.Constructibles?.getConstructibles().find(cons => {
-                    const info = GameInfo.Constructibles.lookup(cons.type);
-                    return info?.ConstructibleType == "IMPROVEMENT_VILLAGE" ||
-                        info?.ConstructibleType == "IMPROVEMENT_ENCAMPMENT";
-                })?.location;
-                this.locations.set(player.id, loc);
-            } else {
-                const cities = player.Cities?.getCities();
-                const loc = cities?.at(0)?.location;
-                this.locations.set(player.id, loc);
-            }
-        }
-    }
+    beforeAttach() { }
     afterAttach() { }
     beforeDetach()  {}
     afterDetach() { }
@@ -122,14 +105,6 @@ class bzPlayerDiplomacyActionPanel {
             column.appendChild(friendIcon);
         }
         content.appendChild(column);
-        // pan to civ location when activated
-        item.addEventListener("action-activate", () => {
-            const loc = this.locations.get(player.id);
-            if (!loc) return;
-            const revealed = GameplayMap.getRevealedState(observer.id, loc.x, loc.y);
-            if (revealed == RevealedStates.HIDDEN) return;
-            Camera.lookAtPlot(loc);
-        });
         return item;
     }
 }
