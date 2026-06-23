@@ -92,6 +92,11 @@ class bzPlayerDiplomacyActionPanel {
         const befriendType = DiplomacyActionTypes.DIPLOMACY_ACTION_GIVE_INFLUENCE_TOKEN;
         const actions = Game.Diplomacy.getPlayerEvents(player.id)
             .filter(act => act.actionType == befriendType);
+        if (actions.length) {
+            // hide vanilla status icons
+            const rivals = content.querySelector(".absolute.flex-row-reverse");
+            if (rivals) rivals.style.display = "none";
+        }
         const befriending = [];
         for (const act of actions) {
             const target = Players.get(act.targetPlayer);
