@@ -63,30 +63,19 @@ class bzPlayerDiplomacyActionPanel {
             icon.style.filter = "fxs-color-tint(#af1b1c)";
             icon.classList.add("bg-black", "rounded-full");
         }
-        // show city-state bonus in tooltip
+        // show warning icon for broken independents
         const bonusType = Game.CityStates.getBonusType(player.id);
         const bonus = GameInfo.CityStateBonuses.lookup(bonusType);
-        if (bonus) {
-            const name = Locale.compose(bonus.Name);
-            const desc = Locale.compose(bonus.Description);
-            // style the tooltip text to fix fonticon alignment
-            const tooltip = `[b]${name}[/b][n]${desc}`
-                .split(/\[[Nn]\]/)
-                .map(s => `[style:leading-normal]${s}[/style]`)
-                .join("[n]");
-            item.setAttribute("data-tooltip-content", tooltip);
-            // show warning icon for broken independents
-            if (player.isIndependent) {
-                const warningIcon = document.createElement("div");
-                warningIcon.classList.value =
-                    "relative mr-2 size-13 bg-cover bg-no-repeat";
-                warningIcon.style.backgroundImage = UI.getIconCSS("ATTENTION");
-                warningIcon.style.filter = "drop-shadow(0 0.22rem 0.11rem black)";
-                warningIcon.setAttribute(
-                    "data-tooltip-content", "LOC_BZ_WARNING_RESPAWNED_INDEPENDENT"
-                );
-                column.appendChild(warningIcon);
-            }
+        if (bonus && player.isIndependent) {
+            const warningIcon = document.createElement("div");
+            warningIcon.classList.value =
+                "relative mr-2 size-13 bg-cover bg-no-repeat";
+            warningIcon.style.backgroundImage = UI.getIconCSS("ATTENTION");
+            warningIcon.style.filter = "drop-shadow(0 0.22rem 0.11rem black)";
+            warningIcon.setAttribute(
+                "data-tooltip-content", "LOC_BZ_WARNING_RESPAWNED_INDEPENDENT"
+            );
+            column.appendChild(warningIcon);
         }
         // show befriending status
         const befriendType = DiplomacyActionTypes.DIPLOMACY_ACTION_GIVE_INFLUENCE_TOKEN;
