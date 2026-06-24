@@ -2,7 +2,7 @@
 <Database>
     <EnglishText>
         <Replace Tag="LOC_BZ_WARNING_RESPAWNED_INDEPENDENT">
-            <Text>[b]Respawned Independent[/b][n]This independent might fail to award suzerain bonuses because of a [b]reported issue[/b] with defeated city-states respawning.</Text>
+            <Text>[b]Respawned Independent[/b][n]This independent might fail to award suzerain bonuses because of a reported issue with defeated city-states respawning.</Text>
         </Replace>
     </EnglishText>
 </Database>
