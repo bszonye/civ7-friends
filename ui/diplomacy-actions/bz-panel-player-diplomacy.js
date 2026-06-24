@@ -18,6 +18,8 @@ class bzPlayerDiplomacyActionPanel {
     const afterCreateMinorPlayerListItem = this.afterCreateMinorPlayerListItem;
     const createMinorPlayerListItem = this.createMinorPlayerListItem;
     // const createMinorPlayerListItem = proto.createMinorPlayerListItem;
+    bzPlayerDiplomacyActionPanel.c_createMinorPlayerListItem =
+      proto.createMinorPlayerListItem;
     proto.createMinorPlayerListItem = function(...args) {
       const item = createMinorPlayerListItem.apply(this, args);
       args = [item, ...args];
@@ -165,7 +167,7 @@ class bzPlayerDiplomacyActionPanel {
     const befriendActions = Game.Diplomacy.getPlayerEvents(player.id).filter((event) => event.actionType == DiplomacyActionTypes.DIPLOMACY_ACTION_GIVE_INFLUENCE_TOKEN).sort((a, b) => {
       const actionA = Game.Diplomacy.getCompletionData(a.uniqueID).turnsToCompletion;
       const actionB = Game.Diplomacy.getCompletionData(b.uniqueID).turnsToCompletion;
-      // TRIX fix sorting
+      // TRIX: fix sorting
       if (actionA != actionB) return actionA - actionB;
       // players who have already acted this turn will lose ties
       const current = GameContext.localPlayerID;
