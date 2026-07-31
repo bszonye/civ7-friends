@@ -347,7 +347,7 @@ class bzPlayerDiplomacyActionPanel {
     }
     // show warning icon for broken independents
     const bonusType = Game.CityStates.getBonusType(player.id);
-    if (bonusType != -1 && player.isIndependent) {
+    if (type && bonusType != -1 && player.isIndependent) {
       const warningIcon = document.createElement("div");
       warningIcon.classList.value =
         "absolute mr-2 size-9 bg-cover bg-no-repeat";

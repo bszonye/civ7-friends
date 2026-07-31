@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Mod id="bz-friends" version="1.2.0" xmlns="ModInfo">
+<Mod id="bz-friends" version="1.3.0" xmlns="ModInfo">
     <Properties>
         <Name>LOC_MOD_BZ_FRIENDS_NAME</Name>
-        <Version>1.2.0</Version>
+        <Version>1.3.0</Version>
         <Description>LOC_MOD_BZ_FRIENDS_DESCRIPTION</Description>
         <Authors>beezany</Authors>
         <Package>Mod</Package>
         <AffectsSavedGames>0</AffectsSavedGames>
+        <bzIcon>blp:leader_portrait_independent</bzIcon>
+        <bzIconScale>75</bzIconScale>
+        <bzIconGlow>#255be4</bzIconGlow>
     </Properties>
     <Dependencies>
         <Mod id="base-standard" title="LOC_MODULE_BASE_STANDARD_NAME" />
@@ -19,6 +22,19 @@
         </Criteria>
     </ActionCriteria>
     <ActionGroups>
+        <ActionGroup id="bz-friends-shell" scope="shell" criteria="always">
+            <Properties>
+                <LoadOrder>50</LoadOrder>
+            </Properties>
+            <Actions>
+                <UIScripts>
+                    <Item>ui/options/editors/bz-editor-keyboard-mapping.js</Item>
+                </UIScripts>
+                <UpdateDatabase>
+                    <Item>config/bz-input.xml</Item>
+                </UpdateDatabase>
+            </Actions>
+        </ActionGroup>
         <ActionGroup id="bz-friends-game" scope="game" criteria="always">
             <Properties>
                 <LoadOrder>50</LoadOrder>
@@ -26,6 +42,8 @@
             <Actions>
                 <UIScripts>
                     <Item>ui/diplomacy-actions/bz-panel-player-diplomacy.js</Item>
+                    <Item>ui/input/bz-hotkey-manager.js</Item>
+                    <Item>ui/options/editors/bz-editor-keyboard-mapping.js</Item>
                 </UIScripts>
                 <UpdateText>
                     <Item>text/en_us/InGameText.xml</Item>
