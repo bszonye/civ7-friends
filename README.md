@@ -1,4 +1,4 @@
-# Friends and Rivals 1.2.1
+# Friends and Rivals 1.3.0
 better city-states list
 
 expanded city-state info for the diplomacy panel:
