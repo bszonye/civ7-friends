@@ -2,28 +2,22 @@ import { ComponentUtilities } from '/core/ui-next/utilities/component-utilities.
 import { UpdateDiploRibbonEvent } from '/base-standard/ui/diplo-ribbon/model-diplo-ribbon.js';
 import { RaiseDiplomacyEvent } from '/base-standard/ui/diplomacy/diplomacy-events.js';
 class bzPlayerDiplomacyActionPanel {
-  static c_prototype;
-  static c_createMinorPlayerListItem;
+  static c;
   constructor(component) {
     this.component = component;
-    component.bzComponent = this;
-    this.patchPrototypes(this.component);
+    this.component.bzFriends = this;
+    this.patchPrototype(Object.getPrototypeOf(component));
   }
-  patchPrototypes(component) {
-    const c_prototype = Object.getPrototypeOf(component);
-    if (bzPlayerDiplomacyActionPanel.c_prototype == c_prototype) return;
-    // patch component methods
-    const proto = bzPlayerDiplomacyActionPanel.c_prototype = c_prototype;
+  patchPrototype(proto) {
+    if (bzPlayerDiplomacyActionPanel.c) return;  // one-time initialization
+    // patch PlayerDiplomacyActionPanel methods & properties
+    const c = bzPlayerDiplomacyActionPanel.c = { proto };
     // afterCreateMinorPlayerListItem
-    const afterCreateMinorPlayerListItem = this.afterCreateMinorPlayerListItem;
-    const createMinorPlayerListItem = this.createMinorPlayerListItem;
-    // const createMinorPlayerListItem = proto.createMinorPlayerListItem;
-    bzPlayerDiplomacyActionPanel.c_createMinorPlayerListItem =
-      proto.createMinorPlayerListItem;
-    proto.createMinorPlayerListItem = function(...args) {
-      const item = createMinorPlayerListItem.apply(this, args);
-      args = [item, ...args];
-      return afterCreateMinorPlayerListItem.apply(this.bzComponent, args);
+    c.createMinorPlayerListItem = c.proto.createMinorPlayerListItem;
+    c.proto.createMinorPlayerListItem = function(...args) {
+      const [player] = args;
+      const item = this.bzFriends.createMinorPlayerListItem(player);
+      return this.bzFriends.afterCreateMinorPlayerListItem(item, player);
     }
   }
   beforeAttach() { }
