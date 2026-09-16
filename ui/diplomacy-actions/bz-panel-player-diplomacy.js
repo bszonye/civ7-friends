@@ -24,7 +24,7 @@ class bzPlayerDiplomacyActionPanel {
   afterAttach() { }
   beforeDetach()  {}
   afterDetach() { }
-  // TRIX: replacement method to fix sorting
+  // TRIX: replacement method to fix sorting and alignment
   createMinorPlayerListItem(player) {
     const playerListItem = document.createElement("fxs-chooser-item");
     playerListItem.classList.add("flex", "grow", "flex-row", "justify-start", "items-center", "mb-2", "w-136");
@@ -38,7 +38,9 @@ class bzPlayerDiplomacyActionPanel {
     iconContainer.classList.value = "size-19 flex self-center items-center justify-center relative";
     playerListItemContentContainer.appendChild(iconContainer);
     const iconImage = document.createElement("div");
-    iconImage.classList.value = "size-14 -top-px bg-center rounded-full relative flex flex-col items-center bg-cover justify-center";
+    // TRIX: fix icon alignment
+    iconImage.classList.value = "size-14 -top-0 bg-center rounded-full relative flex flex-col items-center bg-cover justify-center";
+    // iconImage.classList.value = "size-14 -top-px bg-center rounded-full relative flex flex-col items-center bg-cover justify-center";
     iconContainer.appendChild(iconImage);
     const iconFront = document.createElement("div");
     iconFront.classList.value = "absolute img-civics-icon-frame size-19 flex self-center items-center justify-center pointer-events-none relative";
