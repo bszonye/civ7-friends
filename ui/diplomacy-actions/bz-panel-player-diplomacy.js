@@ -44,7 +44,7 @@ class bzPlayerDiplomacyActionPanel {
     iconFront.classList.value = "absolute img-civics-icon-frame size-19 flex self-center items-center justify-center pointer-events-none relative";
     iconContainer.appendChild(iconFront);
     const independentType = GameInfo.CityStateTypes.lookup(player.getCityStateCityStateType());
-    const iconSrc = independentType?.CityStateType ? UI.getIconURL(`CITY_STATE_${independentType?.CityStateType}`) : "blp:leader_portrait_independent";
+    const iconSrc = independentType?.CityStateType ? UI.getIconURL(`CITY_STATE_${independentType?.CityStateType}`) : "blp:victory_crisis";
     iconImage.style.backgroundImage = `url(${iconSrc})`;
     if (independentType && iconSrc) {
       iconContainer.setAttribute("data-tooltip-content", Locale.compose(independentType.Name));
@@ -331,15 +331,8 @@ class bzPlayerDiplomacyActionPanel {
     civIcon.style.filter = isEnemy ?
       "drop-shadow(0 0 0.333rem #ff4b44) drop-shadow(0 0 0.222rem #af1b1c)" :
       "drop-shadow(0 0.222rem 0.111rem #0006)";
-    // show crisis icons for encampments
-    const type = GameInfo.CityStateTypes.lookup(player.getCityStateCityStateType());
-    if (!type) {  // crisis encampment
-      const icon = civIcon.firstChild;
-      icon.style.backgroundImage = "url('blp:bonustype_crisis')";
-      icon.style.filter = "fxs-color-tint(#af1b1c)";
-      icon.classList.add("bg-black", "rounded-full");
-    }
     // show warning icon for broken independents
+    const type = GameInfo.CityStateTypes.lookup(player.getCityStateCityStateType());
     const bonusType = Game.CityStates.getBonusType(player.id);
     if (type && bonusType != -1 && player.isIndependent) {
       const warningIcon = document.createElement("div");
