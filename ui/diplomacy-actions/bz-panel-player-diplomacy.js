@@ -12,17 +12,13 @@ class bzPlayerDiplomacyActionPanel {
     if (bzPlayerDiplomacyActionPanel.c) return;  // one-time initialization
     // patch PlayerDiplomacyActionPanel methods & properties
     const c = bzPlayerDiplomacyActionPanel.c = { proto };
-    // afterCreateMinorPlayerListItem
+    // replace createMinorPlayerListItem to fix & extend it
     c.createMinorPlayerListItem = c.proto.createMinorPlayerListItem;
-    c.proto.createMinorPlayerListItem = function(...args) {
-      const [player] = args;
-      const item = this.bzFriends.createMinorPlayerListItem(player);
-      return this.bzFriends.afterCreateMinorPlayerListItem(item, player);
-    }
+    c.proto.createMinorPlayerListItem = this.createMinorPlayerListItem;
   }
   beforeAttach() { }
   afterAttach() { }
-  beforeDetach()  {}
+  beforeDetach()  { }
   afterDetach() { }
   // TRIX: replacement method to fix sorting and alignment
   createMinorPlayerListItem(player) {
@@ -38,9 +34,7 @@ class bzPlayerDiplomacyActionPanel {
     iconContainer.classList.value = "size-19 flex self-center items-center justify-center relative";
     playerListItemContentContainer.appendChild(iconContainer);
     const iconImage = document.createElement("div");
-    // TRIX: fix icon alignment
-    iconImage.classList.value = "size-14 -top-0 bg-center rounded-full relative flex flex-col items-center bg-cover justify-center";
-    // iconImage.classList.value = "size-14 -top-px bg-center rounded-full relative flex flex-col items-center bg-cover justify-center";
+    iconImage.classList.value = "size-14 -top-px bg-center rounded-full relative flex flex-col items-center bg-cover justify-center";
     iconContainer.appendChild(iconImage);
     const iconFront = document.createElement("div");
     iconFront.classList.value = "absolute img-civics-icon-frame size-19 flex self-center items-center justify-center pointer-events-none relative";
@@ -321,17 +315,16 @@ class bzPlayerDiplomacyActionPanel {
         Camera.lookAtPlot(location2);
       }
     });
-    return playerListItem;
-  }
-  afterCreateMinorPlayerListItem(item, player) {
-    // adjust vanilla styling
-    const content = item.firstChild;
-    const civIcon = content.firstChild;
-    // red glow for hostile minors
+    // TRIX: adjust vanilla styling
+    // improve icon alignment
+    iconImage.classList.add("z-1");
+    iconImage.classList.remove("-top-px");
+    iconImage.style.left = "-0.0277777778rem";
+    // add red glow to hostile minors
     const observer = Players.get(GameContext.localObserverID);
     const isEnemy = player.Diplomacy?.isAtWarWith(observer.id);
-    civIcon.style.filter = isEnemy ?
-      "drop-shadow(0 0 0.333rem #ff4b44) drop-shadow(0 0 0.222rem #af1b1c)" :
+    iconContainer.style.filter = isEnemy ?
+      "drop-shadow(0 0 0.333rem #ff4b44) drop-shadow(0 0 0.222rem #d93a37)" :
       "drop-shadow(0 0.222rem 0.111rem #0006)";
     // show warning icon for broken independents
     const type = GameInfo.CityStateTypes.lookup(player.getCityStateCityStateType());
@@ -339,15 +332,16 @@ class bzPlayerDiplomacyActionPanel {
     if (type && bonusType != -1 && player.isIndependent) {
       const warningIcon = document.createElement("div");
       warningIcon.classList.value =
-        "absolute mr-2 size-9 bg-cover bg-no-repeat";
+        "z-1 absolute mr-2 size-9 bg-cover bg-no-repeat";
       warningIcon.style.backgroundImage = UI.getIconCSS("ATTENTION");
       warningIcon.style.filter = "drop-shadow(0 0.22rem 0.11rem black)";
       warningIcon.setAttribute(
         "data-tooltip-content", "LOC_BZ_WARNING_RESPAWNED_INDEPENDENT"
       );
-      civIcon.appendChild(warningIcon);
+      iconContainer.appendChild(warningIcon);
     }
-    return item;
+    return playerListItem;
   }
 }
 Controls.decorate("panel-player-diplomacy-actions", (c) => new bzPlayerDiplomacyActionPanel(c));
+// vim: sw=2 et
