@@ -2,35 +2,25 @@ import { ComponentUtilities } from '/core/ui-next/utilities/component-utilities.
 import { UpdateDiploRibbonEvent } from '/base-standard/ui/diplo-ribbon/model-diplo-ribbon.js';
 import { RaiseDiplomacyEvent } from '/base-standard/ui/diplomacy/diplomacy-events.js';
 class bzPlayerDiplomacyActionPanel {
-  static c_prototype;
-  static c_createMinorPlayerListItem;
+  static c;
   constructor(component) {
     this.component = component;
-    component.bzComponent = this;
-    this.patchPrototypes(this.component);
+    this.component.bzFriends = this;
+    this.patchPrototype(Object.getPrototypeOf(component));
   }
-  patchPrototypes(component) {
-    const c_prototype = Object.getPrototypeOf(component);
-    if (bzPlayerDiplomacyActionPanel.c_prototype == c_prototype) return;
-    // patch component methods
-    const proto = bzPlayerDiplomacyActionPanel.c_prototype = c_prototype;
-    // afterCreateMinorPlayerListItem
-    const afterCreateMinorPlayerListItem = this.afterCreateMinorPlayerListItem;
-    const createMinorPlayerListItem = this.createMinorPlayerListItem;
-    // const createMinorPlayerListItem = proto.createMinorPlayerListItem;
-    bzPlayerDiplomacyActionPanel.c_createMinorPlayerListItem =
-      proto.createMinorPlayerListItem;
-    proto.createMinorPlayerListItem = function(...args) {
-      const item = createMinorPlayerListItem.apply(this, args);
-      args = [item, ...args];
-      return afterCreateMinorPlayerListItem.apply(this.bzComponent, args);
-    }
+  patchPrototype(proto) {
+    if (bzPlayerDiplomacyActionPanel.c) return;  // one-time initialization
+    // patch PlayerDiplomacyActionPanel methods & properties
+    const c = bzPlayerDiplomacyActionPanel.c = { proto };
+    // replace createMinorPlayerListItem to fix & extend it
+    c.createMinorPlayerListItem = c.proto.createMinorPlayerListItem;
+    c.proto.createMinorPlayerListItem = this.createMinorPlayerListItem;
   }
   beforeAttach() { }
   afterAttach() { }
-  beforeDetach()  {}
+  beforeDetach()  { }
   afterDetach() { }
-  // TRIX: replacement method to fix sorting
+  // TRIX: replacement method to fix sorting and alignment
   createMinorPlayerListItem(player) {
     const playerListItem = document.createElement("fxs-chooser-item");
     playerListItem.classList.add("flex", "grow", "flex-row", "justify-start", "items-center", "mb-2", "w-136");
@@ -50,7 +40,7 @@ class bzPlayerDiplomacyActionPanel {
     iconFront.classList.value = "absolute img-civics-icon-frame size-19 flex self-center items-center justify-center pointer-events-none relative";
     iconContainer.appendChild(iconFront);
     const independentType = GameInfo.CityStateTypes.lookup(player.getCityStateCityStateType());
-    const iconSrc = independentType?.CityStateType ? UI.getIconURL(`CITY_STATE_${independentType?.CityStateType}`) : "blp:leader_portrait_independent";
+    const iconSrc = independentType?.CityStateType ? UI.getIconURL(`CITY_STATE_${independentType?.CityStateType}`) : "blp:victory_crisis";
     iconImage.style.backgroundImage = `url(${iconSrc})`;
     if (independentType && iconSrc) {
       iconContainer.setAttribute("data-tooltip-content", Locale.compose(independentType.Name));
@@ -325,40 +315,33 @@ class bzPlayerDiplomacyActionPanel {
         Camera.lookAtPlot(location2);
       }
     });
-    return playerListItem;
-  }
-  afterCreateMinorPlayerListItem(item, player) {
-    // adjust vanilla styling
-    const content = item.firstChild;
-    const civIcon = content.firstChild;
-    // red glow for hostile minors
+    // TRIX: adjust vanilla styling
+    // improve icon alignment
+    iconImage.classList.add("z-1");
+    iconImage.classList.remove("-top-px");
+    iconImage.style.left = "-0.0277777778rem";
+    // add red glow to hostile minors
     const observer = Players.get(GameContext.localObserverID);
     const isEnemy = player.Diplomacy?.isAtWarWith(observer.id);
-    civIcon.style.filter = isEnemy ?
-      "drop-shadow(0 0 0.333rem #ff4b44) drop-shadow(0 0 0.222rem #af1b1c)" :
+    iconContainer.style.filter = isEnemy ?
+      "drop-shadow(0 0 0.333rem #ff4b44) drop-shadow(0 0 0.222rem #d93a37)" :
       "drop-shadow(0 0.222rem 0.111rem #0006)";
-    // show crisis icons for encampments
-    const type = GameInfo.CityStateTypes.lookup(player.getCityStateCityStateType());
-    if (!type) {  // crisis encampment
-      const icon = civIcon.firstChild;
-      icon.style.backgroundImage = "url('blp:bonustype_crisis')";
-      icon.style.filter = "fxs-color-tint(#af1b1c)";
-      icon.classList.add("bg-black", "rounded-full");
-    }
     // show warning icon for broken independents
+    const type = GameInfo.CityStateTypes.lookup(player.getCityStateCityStateType());
     const bonusType = Game.CityStates.getBonusType(player.id);
     if (type && bonusType != -1 && player.isIndependent) {
       const warningIcon = document.createElement("div");
       warningIcon.classList.value =
-        "absolute mr-2 size-9 bg-cover bg-no-repeat";
+        "z-1 absolute mr-2 size-9 bg-cover bg-no-repeat";
       warningIcon.style.backgroundImage = UI.getIconCSS("ATTENTION");
       warningIcon.style.filter = "drop-shadow(0 0.22rem 0.11rem black)";
       warningIcon.setAttribute(
         "data-tooltip-content", "LOC_BZ_WARNING_RESPAWNED_INDEPENDENT"
       );
-      civIcon.appendChild(warningIcon);
+      iconContainer.appendChild(warningIcon);
     }
-    return item;
+    return playerListItem;
   }
 }
 Controls.decorate("panel-player-diplomacy-actions", (c) => new bzPlayerDiplomacyActionPanel(c));
+// vim: sw=2 et

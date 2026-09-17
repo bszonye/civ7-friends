@@ -1,4 +1,5 @@
 import HotkeyManager from '/core/ui/input/hotkey-manager.js';
+import { InputHandlerState } from '/core/ui/input/input-support.js';
 import { InterfaceMode } from '/core/ui/interface-modes/interface-modes.js';
 import { UpdateDiploRibbonEvent } from '/base-standard/ui/diplo-ribbon/model-diplo-ribbon.js';
 import { RaiseDiplomacyEvent } from '/base-standard/ui/diplomacy/diplomacy-events.js';
@@ -29,7 +30,7 @@ HotkeyManager.handleInput = function(...args) {
                         tabBar.setAttribute("selected-tab-index", `${tabIndex}`);
                     }
                 });
-                return false;
+                return InputHandlerState.Handled;
             }
         }
     }
