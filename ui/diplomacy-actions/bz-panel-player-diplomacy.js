@@ -216,6 +216,7 @@ class bzPlayerDiplomacyActionPanel {
       const preloadImages = ["blp:mp_player_detail", "blp:base_ticket-bg"];
       ComponentUtilities.preloadImages(...preloadImages).finally(() => {
         const tooltipDiv = document.createElement("div");
+        tooltipDiv.setAttribute("class", "flex");
         for (const classString of filigreeClasses) {
           const filigree = document.createElement("div");
           filigree.setAttribute("class", classString);
@@ -223,16 +224,19 @@ class bzPlayerDiplomacyActionPanel {
           tooltipDiv.appendChild(filigree);
         }
         const tooltipContainer = document.createElement("div");
-        tooltipContainer.setAttribute("class", "flex flex-col items-center justify-center m-1");
+        tooltipContainer.setAttribute("class", "items-center justify-center m-1");
         tooltipDiv.appendChild(tooltipContainer);
         const tooltipName = document.createElement("div");
-        tooltipName.setAttribute("class", "text-secondary text-sm font-title uppercase tracking-100");
+        tooltipName.setAttribute(
+          "class",
+          "text-secondary text-sm font-title uppercase tracking-100 text-center"
+        );
         tooltipName.innerHTML = Locale.stylize(player.civilizationFullName);
         tooltipContainer.appendChild(tooltipName);
-        const ticketClass = "mt-1 p-3 px-6 pb-0 img-base-ticket-bg flex flex-col gap-2";
+        const ticketClass = "mt-1 p-3 pb-0 img-base-ticket-bg flex flex-col";
         if (bonusDefinition) {
           const tooltipHeader = document.createElement("div");
-          tooltipHeader.setAttribute("class", "text-sm uppercase");
+          tooltipHeader.setAttribute("class", "text-sm uppercase text-center");
           tooltipHeader.innerHTML = Locale.stylize("LOC_DIPLOMACY_CHOSEN_BONUS_TITLE");
           tooltipContainer.appendChild(tooltipHeader);
           const tooltipTicket = document.createElement("div");
@@ -250,7 +254,7 @@ class bzPlayerDiplomacyActionPanel {
         const localPlayerDiplomacy2 = Players.get(GameContext.localPlayerID)?.Diplomacy;
         if (befriendActions.length > 0 && localPlayerDiplomacy2) {
           const tooltipHeader = document.createElement("div");
-          tooltipHeader.setAttribute("class", "text-sm uppercase");
+          tooltipHeader.setAttribute("class", "text-sm uppercase text-center");
           tooltipHeader.innerHTML = Locale.stylize("LOC_DIPLOMACY_ACTION_GIVE_INFLUENCE_TOKEN_PROJECT_NAME");
           tooltipContainer.appendChild(tooltipHeader);
           const tooltipTicket = document.createElement("div");
@@ -259,11 +263,13 @@ class bzPlayerDiplomacyActionPanel {
           for (let index = 0; index < befriendActions.length; index++) {
             const action = befriendActions[index];
             const playerEntry = document.createElement("div");
-            playerEntry.setAttribute("class", "flex flex-row");
+            playerEntry.setAttribute("class", "flex flex-row items-baseline gap-x-3");
             const playerPlace = document.createElement("div");
+            playerPlace.setAttribute("class", "shrink-0");
             playerPlace.innerHTML = `${index + 1}. `;
             playerEntry.appendChild(playerPlace);
             const playerNameContainer = document.createElement("div");
+            playerNameContainer.setAttribute("class", "min-w-0 flex-1 break-words");
             const actionPlayer = Configuration.getPlayer(action.initialPlayer);
             const playerString = action.initialPlayer == GameContext.localPlayerID ? "LOC_VICTORY_LEADER_NAME_YOU" : "LOC_VICTORY_LEADER_NAME";
             const playerName = localPlayerDiplomacy2.hasMet(action.initialPlayer) || GameContext.localPlayerID == action.initialPlayer ? actionPlayer.leaderName ?? "LOC_UI_UNMET_PLAYER_NAME" : "LOC_UI_UNMET_PLAYER_NAME";
@@ -272,11 +278,9 @@ class bzPlayerDiplomacyActionPanel {
             playerEntry.classList.add(
               action.initialPlayer == GameContext.localPlayerID ? "" : "opacity-60"
             );
-            const spacer = document.createElement("div");
-            spacer.setAttribute("class", "min-w-10 grow");
-            playerEntry.appendChild(spacer);
             const turnsLeft = Game.Diplomacy.getCompletionData(action.uniqueID).turnsToCompletion;
             const turnsContainer = document.createElement("div");
+            turnsContainer.setAttribute("class", "shrink-0");
             turnsContainer.innerHTML = Locale.compose("LOC_NARRATIVE_TURN_TIMER", turnsLeft);
             playerEntry.appendChild(turnsContainer);
             if (index != 0) {
@@ -299,7 +303,7 @@ class bzPlayerDiplomacyActionPanel {
             tooltipTicket.appendChild(warningDiv);
           } else {
             const lastChild = tooltipTicket.lastChild;
-            lastChild?.classList.add("-mb-2");
+            lastChild?.classList.add("-mb-0");
           }
         }
         playerListItem.setAttribute("data-tooltip-content", tooltipDiv.outerHTML);
